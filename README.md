@@ -4,7 +4,7 @@ A simple library to facilitate locking from node.js.
 
 ### Why do I need locks if node only has a single thread?
 
-While it is try that node itself only allows utilizes a single thread, it is also true that native node modules can spawn their own threads, and when this happens it is sometimes useful to have the ability to spawn and control locks!
+While it is true that node itself only allows utilizes a single thread, it is also true that native node modules can spawn their own threads, and when this happens it is sometimes useful to have the ability to spawn and control locks!
 
 ### Why wouldn't I just lock from the native code?
 
