@@ -7,6 +7,7 @@
         "src"
       ],
       "sources": [
+        "src/init.cc",
         "src/mutex.cc"
         ]
     }

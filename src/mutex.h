@@ -1,11 +1,13 @@
-#ifndef __MUTEX_H__
-#define __MUTEX_H__
+#ifndef __LOKKER_MUTEX_H__
+#define __LOKKER_MUTEX_H__
 
 #include <nan.h>
 #include <node.h>
 #include <uv.h>
 
 using namespace Nan;
+
+namespace Lokker {
 
 class LockWorker : public AsyncWorker {
   public:
@@ -21,7 +23,7 @@ class LockWorker : public AsyncWorker {
 
 class Mutex : public ObjectWrap {
   public:
-  static NAN_MODULE_INIT(Init);
+  static void Init(v8::Local<v8::Object>);
 
   private:
   explicit Mutex();
@@ -35,4 +37,5 @@ class Mutex : public ObjectWrap {
   uv_mutex_t _mutex;
 };
 
+}
 #endif

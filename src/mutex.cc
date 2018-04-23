@@ -1,6 +1,6 @@
-#include <stdio.h>
-
 #include "mutex.h"
+
+namespace Lokker {
 
 LockWorker::LockWorker(Nan::Callback *callback, uv_mutex_t *mutex)
   : AsyncWorker(callback) {
@@ -53,7 +53,7 @@ NAN_METHOD(Mutex::Unlock) {
 }
 
 Nan::Persistent<v8::Function> Mutex::constructor;
-NAN_MODULE_INIT(Mutex::Init) {
+void Mutex::Init(v8::Local<v8::Object> exports) {
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Mutex").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -62,8 +62,8 @@ NAN_MODULE_INIT(Mutex::Init) {
   SetPrototypeMethod(tpl, "unlock", Unlock);
 
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
-  Set(target, Nan::New("Mutex").ToLocalChecked(),
+  exports->Set(Nan::New("Mutex").ToLocalChecked(),
     Nan::GetFunction(tpl).ToLocalChecked());
 }
 
-NODE_MODULE(mutex, Mutex::Init)
+}
