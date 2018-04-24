@@ -23,8 +23,20 @@ void LockWorker::HandleOkCallback() {
   callback->Call(2, argv, async_resource);
 }
 
-Mutex::Mutex() {
-  uv_mutex_init(&_mutex);
+Mutex::Mutex(bool recursive) {
+  _recursive = recursive;
+
+  int err;
+  if (_recursive) {
+    printf("Using recursive\n");
+    err = uv_mutex_init_recursive(&_mutex);
+  } else {
+    printf("Non recursive\n");
+    err = uv_mutex_init(&_mutex);
+  }
+
+  if (err)
+    Nan::ThrowError("Could not spawn the mutex");
 }
 
 Mutex::~Mutex() {
@@ -35,8 +47,13 @@ NAN_METHOD(Mutex::New) {
   if (!info.IsConstructCall()) {
     return Nan::ThrowError("non-constructor invocation not supported");
   }
+
+  if (!info[0]->IsBoolean()) {
+    return Nan::ThrowError("Boolean value 'recursive' is required");
+  }
   
-  Mutex *mut = new Mutex();
+  v8::Local<v8::Boolean> rec = Nan::To<v8::Boolean>(info[0]).ToLocalChecked();
+  Mutex *mut = new Mutex(rec->BooleanValue());
   mut->Wrap(info.This());
   info.GetReturnValue().Set(info.This());
 }
@@ -56,7 +73,7 @@ Nan::Persistent<v8::Function> Mutex::constructor;
 void Mutex::Init(v8::Local<v8::Object> exports) {
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
   tpl->SetClassName(Nan::New("Mutex").ToLocalChecked());
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  tpl->InstanceTemplate()->SetInternalFieldCount(2);
 
   SetPrototypeMethod(tpl, "lock", Lock);
   SetPrototypeMethod(tpl, "unlock", Unlock);

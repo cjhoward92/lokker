@@ -26,7 +26,7 @@ class Mutex : public ObjectWrap {
   static void Init(v8::Local<v8::Object>);
 
   private:
-  explicit Mutex();
+  explicit Mutex(bool recursive);
   ~Mutex();
 
   static NAN_METHOD(New);
@@ -35,6 +35,7 @@ class Mutex : public ObjectWrap {
 
   static Persistent<v8::Function> constructor;
   uv_mutex_t _mutex;
+  bool _recursive;
 };
 
 }

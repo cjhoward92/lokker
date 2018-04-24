@@ -1,6 +1,6 @@
 const locker = require('..');
 
-const mut = new locker.Mutex();
+const mut = new locker.Mutex(true);
 
 const first = async () => {
   console.log('First is going to lock');
